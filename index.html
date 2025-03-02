@@ -87,12 +87,14 @@
         .cell-image {
             background: rgba(255,255,255,0.1); /* 添加默认背景 */
             display: block; /* 修复移动端图片显示 */
+			visibility: hidden; /* 默认隐藏 */
         }
-        /* ▲▲▲▲▲▲▲▲▲▲ 修改结束 ▲▲▲▲▲▲▲▲▲▲ */
-	
-	        /* ▼▼▼▼▼▼▼▼▼▼ 新增的居中样式 ▼▼▼▼▼▼▼▼▼▼ */
-        /* 修改2：头部样式调整 */
-        .header {
+		
+		.cell-image[src]:not([src=""]) { /* 仅当有有效图片时显示 */
+			visibility: visible;
+		}
+        
+		.header {
             margin: 20px 0;
             padding: 15px 25px; /* 增加横向内边距 */
         }
