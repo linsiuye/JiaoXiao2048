@@ -2,8 +2,94 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <!-- ▼▼▼▼▼▼▼ 新增viewport标签 ▼▼▼▼▼▼▼ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- ▲▲▲▲▲▲▲ 新增结束 ▲▲▲▲▲▲▲ -->
     <title>貊泽别凹小游戏了3.0</title>
     <style>
+	        /* ▼▼▼▼▼▼▼▼▼▼ 新增移动端适配样式 ▼▼▼▼▼▼▼▼▼▼ */
+        /* 修改1：网格容器宽度适配 */
+        .grid-container {
+			/* 计算基础尺寸：4个单元格 + 3个间隙 + 容器内边距 */
+			width: calc(75px * 4 + 4px * 3 + 24px);
+			transform-origin: center top; /* 缩放锚点 */
+		}
+
+        /* 修改2：单元格尺寸适配 */
+        .cell {
+            width: 18vw;  /* 4列布局：90vw / 4 = 22.5vw，减去间隙 */
+            height: 18vw;
+            max-width: 75px; /* 保持PC端原有最大尺寸 */
+            max-height: 75px;
+        }
+
+        /* 修改3：按钮文字适配 */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5em !important; /* 缩小标题 */
+            }
+            .score-box {
+                font-size: 12px !important;
+                padding: 8px 12px !important;
+            }
+            .new-game-btn, .mute-btn {
+                font-size: 12px !important;
+                padding: 8px 15px !important;
+            }
+		    .grid-container {
+				/* 动态缩放公式：屏幕宽度/(基础宽度+安全边距) */
+				transform: scale(calc(100vw / 420px)); 
+				transform-origin: center top;
+			}
+			
+			/* 极端小屏限制最小缩放比例 */
+			@media (max-width: 320px) {
+				.grid-container {
+					transform: scale(0.75);
+				}
+			}
+			.cell {
+			width: 20vw !important;  /* 重新计算尺寸 */
+			height: 20vw !important;
+			max-width: 75px;         /* 保持PC端最大尺寸 */
+			max-height: 75px;
+			}
+			
+		    .header {
+				padding: 10px 15px !important;
+				margin: 10px 0 !important;
+			}
+    
+			h1 {
+				font-size: clamp(1.8em, 7vw, 2.5em) !important;
+				margin-bottom: 4px !important;
+			}
+    
+			.score-container {
+				gap: 10px !important;
+				margin-bottom: 10px !important;
+				max-width: 90vw !important;
+			}
+			
+			.score-box {
+				min-width: 22vw !important;
+				padding: 8px !important;
+				font-size: clamp(10px, 3vw, 12px) !important;
+			}
+			
+			#score, #best {
+				font-size: clamp(14px, 4vw, 16px) !important;
+				margin-top: 2px !important;
+			}	
+		}
+
+        /* 修改4：修复图片显示问题 */
+        .cell-image {
+            background: rgba(255,255,255,0.1); /* 添加默认背景 */
+            display: block; /* 修复移动端图片显示 */
+        }
+        /* ▲▲▲▲▲▲▲▲▲▲ 修改结束 ▲▲▲▲▲▲▲▲▲▲ */
+	
 	        /* ▼▼▼▼▼▼▼▼▼▼ 新增的居中样式 ▼▼▼▼▼▼▼▼▼▼ */
         /* 修改2：头部样式调整 */
         .header {
@@ -118,11 +204,31 @@
         body { background: #F0D5D0 url(images/background01.png) no-repeat center/cover; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; }
         @media (max-aspect-ratio: 1/1) { body { background-image: url(images/background02.png); } }
         .header { margin: 20px 0; text-align: center; background: rgba(255,255,255,0.8); padding: 15px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.15); }
-        h1 { color: #B9594C; font-size: 3.5em; margin-bottom: 8px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
-        .score-container { display: flex; gap: 15px; margin-bottom: 15px; }
-        .score-box { background: #75BCC3; padding: 12px 20px; border-radius: 6px; color: white; text-align: center; border: 2px solid rgba(255,255,255,0.5); font-size: 14px; }
+        h1 {
+		color: #B9594C; 
+		font-size: clamp(2em, 8vw, 3.5em);
+		margin-bottom: 8px; 
+		text-shadow: 2px 2px 4px rgba(0,0,0,0.1); 
+		}
+		
+        .score-container { 
+		display: flex; 
+		gap: clamp(10px, 3vw, 15px);
+		margin-bottom: 15px; 
+		}
+		
+        .score-box { 
+		background: #75BCC3; 
+		padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px);
+		border-radius: 6px; 
+		color: white; 
+		text-align: center; 
+		border: 2px solid rgba(255,255,255,0.5); 
+		font-size: 14px; 
+		}
+		
         .grid-container { background: rgba(117, 188, 195, 0.9); padding: 12px; border-radius: 8px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 3px solid rgba(255,255,255,0.8); }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; /* 固定间距 */ }
         .cell { width: 75px; height: 75px; background: rgba(255, 255, 255, 0.3); border-radius: 5px; position: relative; overflow: hidden; border: 2px solid rgba(255,255,255,0.5); }
         .cell-number { position: absolute; left: 4px; bottom: 2px; font-size: 16px; font-weight: bold; color: white; z-index: 2; text-shadow: 1px 1px 2px #5097AA, -1px -1px 2px #5097AA, 1px -1px 2px #5097AA, -1px 1px 2px #5097AA; }
         .cell-image { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
