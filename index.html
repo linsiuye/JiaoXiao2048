@@ -274,16 +274,17 @@
     </div>
     
     <!-- 控制按钮 -->
-    <div class="control-buttons">
-        <button class="new-game-btn" onclick="startGame()">
-            GAME START
-            <span class="zh-label">游戏开始</span>
-        </button>
-        <button class="mute-btn" onclick="toggleMute()">
-            🔊 Sound
-            <span class="zh-label">静音</span>
-        </button>
-    </div>
+	<div class="control-buttons">
+		<button class="new-game-btn" onclick="startGame()">
+			GAME START
+			<span class="zh-label">游戏开始</span>
+		</button>
+		</button>
+		<button class="mute-btn" onclick="toggleMute()">
+			🔊 Sound
+			<span class="zh-label">静音</span>
+		</button>
+	</div>
 
     <script>
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -326,8 +327,7 @@
         }
 
         function startGame() {
-            addNewNumber();
-            addNewNumber();
+			newGame(); 
             updateView();
             resetIdleTimer();
             checkAgain();
@@ -579,17 +579,28 @@
 
         function newGame() {
 
-            score = 0;
-
-            gameOverTime = 0;
-
-            clearTimeout(againTimer);
-
-            document.getElementById('gameOver').style.display = 'none';
-
-            initGrid();
-
-        }
+			// 重置核心数据
+			score = 0;
+			grid = Array(4).fill().map(() => Array(4).fill(0));
+			
+			// 清空棋盘DOM
+			const container = document.getElementById('grid');
+			container.innerHTML = '';
+			createGrid(); // 重建棋盘结构
+			
+			// 更新分数显示
+			document.getElementById('score').textContent = 0;
+			document.getElementById('best').textContent = localStorage.getItem('best2048') || 0;
+			
+			// 隐藏游戏结束提示
+			document.getElementById('gameOver').style.display = 'none';
+			gameOverTime = 0;
+			
+			// 生成初始数字
+			addNewNumber();
+			addNewNumber();
+			updateView();
+		}
 
 
 
