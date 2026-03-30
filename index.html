@@ -2,7 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8">
+ HEAD
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- ▼▼▼▼▼▼▼ 新增viewport标签 ▼▼▼▼▼▼▼ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- ▲▲▲▲▲▲▲ 新增结束 ▲▲▲▲▲▲▲ -->
+72da1b1656fb67f53024fd418283a25c39820910
     <title>貊泽别凹小游戏了3.0</title>
     <style>
 	        /* ▼▼▼▼▼▼▼▼▼▼ 新增移动端适配样式 ▼▼▼▼▼▼▼▼▼▼ */
@@ -227,8 +233,12 @@
 		font-size: 14px; 
 		}
 		
+        HEAD
         /* 这里新增了 touch-action: none; 禁用网格区域的手势缩放和默认滑动 */
         .grid-container { background: rgba(117, 188, 195, 0.9); padding: 12px; border-radius: 8px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 3px solid rgba(255,255,255,0.8); touch-action: none; /* 新增：完全禁用浏览器默认手势 */ }
+
+        .grid-container { background: rgba(117, 188, 195, 0.9); padding: 12px; border-radius: 8px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 3px solid rgba(255,255,255,0.8); }
+72da1b1656fb67f53024fd418283a25c39820910
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; /* 固定间距 */ }
         .cell { width: 75px; height: 75px; background: rgba(255, 255, 255, 0.3); border-radius: 5px; position: relative; overflow: hidden; border: 2px solid rgba(255,255,255,0.5); }
         .cell-number { position: absolute; left: 4px; bottom: 2px; font-size: 16px; font-weight: bold; color: white; z-index: 2; text-shadow: 1px 1px 2px #5097AA, -1px -1px 2px #5097AA, 1px -1px 2px #5097AA, -1px 1px 2px #5097AA; }
@@ -267,11 +277,20 @@
         <div class="game-over" id="gameOver">Game Over!</div>
     </div>
     
+<<<<<<< HEAD
     <div class="control-buttons">
+=======
+    <!-- 控制按钮 -->
+	<div class="control-buttons">
+>>>>>>> 72da1b1656fb67f53024fd418283a25c39820910
 		<button class="new-game-btn" onclick="startGame()">
 			GAME START
 			<span class="zh-label">游戏开始</span>
 		</button>
+<<<<<<< HEAD
+=======
+		</button>
+>>>>>>> 72da1b1656fb67f53024fd418283a25c39820910
 		<button class="mute-btn" onclick="toggleMute()">
 			🔊 Sound
 			<span class="zh-label">静音</span>
@@ -460,6 +479,10 @@
         }
 
         function newGame() {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72da1b1656fb67f53024fd418283a25c39820910
 			// 重置核心数据
 			score = 0;
 			grid = Array(4).fill().map(() => Array(4).fill(0));
@@ -482,6 +505,11 @@
 			addNewNumber();
 			updateView();
 		}
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 72da1b1656fb67f53024fd418283a25c39820910
 
         function playSound(sounds) {
             if (!isMuted && sounds) {
