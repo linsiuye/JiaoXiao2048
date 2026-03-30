@@ -2,11 +2,97 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>貊泽别凹小游戏了3.0</title>
     <style>
-	        /* ▼▼▼▼▼▼▼▼▼▼ 新增的居中样式 ▼▼▼▼▼▼▼▼▼▼ */
-        /* 修改2：头部样式调整 */
-        .header {
+	        /* ▼▼▼▼▼▼▼▼▼▼ 新增移动端适配样式 ▼▼▼▼▼▼▼▼▼▼ */
+        /* 修改1：网格容器宽度适配 */
+        .grid-container {
+			/* 计算基础尺寸：4个单元格 + 3个间隙 + 容器内边距 */
+			width: calc(75px * 4 + 4px * 3 + 24px);
+			transform-origin: center top; /* 缩放锚点 */
+		}
+
+        /* 修改2：单元格尺寸适配 */
+        .cell {
+            width: 18vw;  /* 4列布局：90vw / 4 = 22.5vw，减去间隙 */
+            height: 18vw;
+            max-width: 75px; /* 保持PC端原有最大尺寸 */
+            max-height: 75px;
+        }
+
+        /* 修改3：按钮文字适配 */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5em !important; /* 缩小标题 */
+            }
+            .score-box {
+                font-size: 12px !important;
+                padding: 8px 12px !important;
+            }
+            .new-game-btn, .mute-btn {
+                font-size: 12px !important;
+                padding: 8px 15px !important;
+            }
+		    .grid-container {
+				/* 动态缩放公式：屏幕宽度/(基础宽度+安全边距) */
+				transform: scale(calc(100vw / 420px)); 
+				transform-origin: center top;
+			}
+			
+			/* 极端小屏限制最小缩放比例 */
+			@media (max-width: 320px) {
+				.grid-container {
+					transform: scale(0.75);
+				}
+			}
+			.cell {
+			width: 20vw !important;  /* 重新计算尺寸 */
+			height: 20vw !important;
+			max-width: 75px;         /* 保持PC端最大尺寸 */
+			max-height: 75px;
+			}
+			
+		    .header {
+				padding: 10px 15px !important;
+				margin: 10px 0 !important;
+			}
+    
+			h1 {
+				font-size: clamp(1.8em, 7vw, 2.5em) !important;
+				margin-bottom: 4px !important;
+			}
+    
+			.score-container {
+				gap: 10px !important;
+				margin-bottom: 10px !important;
+				max-width: 90vw !important;
+			}
+			
+			.score-box {
+				min-width: 22vw !important;
+				padding: 8px !important;
+				font-size: clamp(10px, 3vw, 12px) !important;
+			}
+			
+			#score, #best {
+				font-size: clamp(14px, 4vw, 16px) !important;
+				margin-top: 2px !important;
+			}	
+		}
+
+        /* 修改4：修复图片显示问题 */
+        .cell-image {
+            background: rgba(255,255,255,0.1); /* 添加默认背景 */
+            display: block; /* 修复移动端图片显示 */
+			visibility: hidden; /* 默认隐藏 */
+        }
+		
+		.cell-image[src]:not([src=""]) { /* 仅当有有效图片时显示 */
+			visibility: visible;
+		}
+        
+		.header {
             margin: 20px 0;
             padding: 15px 25px; /* 增加横向内边距 */
         }
@@ -113,16 +199,37 @@
             flex-direction: column;
         }
 		
-        /* 保持原有CSS样式不变 */
+        /* 保持原有CSS样式不变，这里新增了 overscroll-behavior-y: none; 解决下拉刷新 */
         * { margin: 0; padding: 0; font-family: "Helvetica Neue", Arial, sans-serif; box-sizing: border-box; }
-        body { background: #F0D5D0 url(images/background01.png) no-repeat center/cover; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; }
+        body { background: #F0D5D0 url(images/background01.png) no-repeat center/cover; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; overscroll-behavior-y: none; /* 新增：阻止边界回弹/下拉刷新 */ }
         @media (max-aspect-ratio: 1/1) { body { background-image: url(images/background02.png); } }
         .header { margin: 20px 0; text-align: center; background: rgba(255,255,255,0.8); padding: 15px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.15); }
-        h1 { color: #B9594C; font-size: 3.5em; margin-bottom: 8px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
-        .score-container { display: flex; gap: 15px; margin-bottom: 15px; }
-        .score-box { background: #75BCC3; padding: 12px 20px; border-radius: 6px; color: white; text-align: center; border: 2px solid rgba(255,255,255,0.5); font-size: 14px; }
-        .grid-container { background: rgba(117, 188, 195, 0.9); padding: 12px; border-radius: 8px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 3px solid rgba(255,255,255,0.8); }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        h1 {
+		color: #B9594C; 
+		font-size: clamp(2em, 8vw, 3.5em);
+		margin-bottom: 8px; 
+		text-shadow: 2px 2px 4px rgba(0,0,0,0.1); 
+		}
+		
+        .score-container { 
+		display: flex; 
+		gap: clamp(10px, 3vw, 15px);
+		margin-bottom: 15px; 
+		}
+		
+        .score-box { 
+		background: #75BCC3; 
+		padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px);
+		border-radius: 6px; 
+		color: white; 
+		text-align: center; 
+		border: 2px solid rgba(255,255,255,0.5); 
+		font-size: 14px; 
+		}
+		
+        /* 这里新增了 touch-action: none; 禁用网格区域的手势缩放和默认滑动 */
+        .grid-container { background: rgba(117, 188, 195, 0.9); padding: 12px; border-radius: 8px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 3px solid rgba(255,255,255,0.8); touch-action: none; /* 新增：完全禁用浏览器默认手势 */ }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; /* 固定间距 */ }
         .cell { width: 75px; height: 75px; background: rgba(255, 255, 255, 0.3); border-radius: 5px; position: relative; overflow: hidden; border: 2px solid rgba(255,255,255,0.5); }
         .cell-number { position: absolute; left: 4px; bottom: 2px; font-size: 16px; font-weight: bold; color: white; z-index: 2; text-shadow: 1px 1px 2px #5097AA, -1px -1px 2px #5097AA, 1px -1px 2px #5097AA, -1px 1px 2px #5097AA; }
         .cell-image { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
@@ -136,10 +243,8 @@
     </style>
 </head>
 <body>
-    <!-- ▼▼▼▼▼▼▼▼▼▼ 修改的HTML结构 ▼▼▼▼▼▼▼▼▼▼ -->
     <div class="header">
         <h1>2048</h1>
-        <!-- 新增包裹容器 -->
         <div class="score-container">
             <div class="score-box">
                 <div>
@@ -157,25 +262,21 @@
             </div>
         </div>
     </div>
-    <!-- ▲▲▲▲▲▲▲▲▲▲ HTML修改结束 ▲▲▲▲▲▲▲▲▲▲ -->
-
-
     <div class="grid-container">
         <div class="grid" id="grid"></div>
         <div class="game-over" id="gameOver">Game Over!</div>
     </div>
     
-    <!-- 控制按钮 -->
     <div class="control-buttons">
-        <button class="new-game-btn" onclick="startGame()">
-            GAME START
-            <span class="zh-label">游戏开始</span>
-        </button>
-        <button class="mute-btn" onclick="toggleMute()">
-            🔊 Sound
-            <span class="zh-label">静音</span>
-        </button>
-    </div>
+		<button class="new-game-btn" onclick="startGame()">
+			GAME START
+			<span class="zh-label">游戏开始</span>
+		</button>
+		<button class="mute-btn" onclick="toggleMute()">
+			🔊 Sound
+			<span class="zh-label">静音</span>
+		</button>
+	</div>
 
     <script>
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -218,8 +319,7 @@
         }
 
         function startGame() {
-            addNewNumber();
-            addNewNumber();
+			newGame(); 
             updateView();
             resetIdleTimer();
             checkAgain();
@@ -250,363 +350,200 @@
 
         /* 以下保持原有游戏逻辑完整不变 */
         function addNewNumber() {
-
             const emptyCells = [];
-
             for (let i = 0; i < 4; i++) {
-
                 for (let j = 0; j < 4; j++) {
-
                     if (grid[i][j] === 0) emptyCells.push({i, j});
-
                 }
-
             }
-
             if (emptyCells.length > 0) {
-
                 const {i, j} = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
                 grid[i][j] = Math.random() < 0.9 ? 2 : 4;
-
             }
-
         }
-
-
 
         function updateView() {
-
             const cells = document.getElementsByClassName('cell');
-
             for (let i = 0; i < 4; i++) {
-
                 for (let j = 0; j < 4; j++) {
-
                     const value = grid[i][j];
-
                     const idx = i * 4 + j;
-
                     const cell = cells[idx];
-
                     
-
                     const img = cell.querySelector('.cell-image');
-
                     const numberLabel = cell.querySelector('.cell-number');
-
                     
-
                     img.src = value ? `images/${value}.png` : '';
-
                     numberLabel.textContent = value || '';
 
-
-
                     if (value === 2048) {
-
                         playSound(successSounds);
-
                     }
-
                 }
-
             }
-
             document.getElementById('score').textContent = score;
-
             document.getElementById('best').textContent = best;
-
         }
-
-
 
         function move(direction) {
-
             let moved = false;
-
             const newGrid = Array(4).fill().map(() => Array(4).fill(0));
-
             
-
             if (direction === 'left' || direction === 'right') {
-
                 for (let i = 0; i < 4; i++) {
-
                     let row = grid[i].filter(x => x !== 0);
-
                     if (direction === 'right') row.reverse();
-
                     
-
                     for (let j = 0; j < row.length - 1; j++) {
-
                         if (row[j] === row[j + 1]) {
-
                             row[j] *= 2;
-
                             score += row[j];
-
                             row.splice(j + 1, 1);
-
                             moved = true;
-
                         }
-
                     }
-
                     
-
                     while (row.length < 4) row.push(0);
-
                     if (direction === 'right') row.reverse();
-
                     newGrid[i] = row;
-
                 }
-
             } else {
-
                 for (let j = 0; j < 4; j++) {
-
                     let col = grid.map(row => row[j]).filter(x => x !== 0);
-
                     if (direction === 'down') col.reverse();
-
                     
-
                     for (let i = 0; i < col.length - 1; i++) {
-
                         if (col[i] === col[i + 1]) {
-
                             col[i] *= 2;
-
                             score += col[i];
-
                             col.splice(i + 1, 1);
-
                             moved = true;
-
                         }
-
                     }
-
                     
-
                     while (col.length < 4) col.push(0);
-
                     if (direction === 'down') col.reverse();
-
                     col.forEach((val, i) => newGrid[i][j] = val);
-
                 }
-
             }
-
             
-
             if (JSON.stringify(grid) !== JSON.stringify(newGrid)) {
-
                 grid = newGrid;
-
                 addNewNumber();
-
                 moved = true;
-
             }
-
             
-
             if (moved) {
-
                 lastActionTime = Date.now();
-
                 resetIdleTimer();
-
                 if (score > best) {
-
                     best = score;
-
                     localStorage.setItem('best2048', best);
-
                 }
-
                 updateView();
-
                 checkGameOver();
-
             }
-
         }
-
-
 
         function checkGameOver() {
-
             for (let i = 0; i < 4; i++) {
-
                 for (let j = 0; j < 4; j++) {
-
                     if (grid[i][j] === 0) return false;
-
                     if (i < 3 && grid[i][j] === grid[i + 1][j]) return false;
-
                     if (j < 3 && grid[i][j] === grid[i][j + 1]) return false;
-
                 }
-
             }
-
             gameOverTime = Date.now();
-
             playSound(gameOverSounds);
-
             document.getElementById('gameOver').style.display = 'flex';
-
             return true;
-
         }
-
-
 
         function newGame() {
-
-            score = 0;
-
-            gameOverTime = 0;
-
-            clearTimeout(againTimer);
-
-            document.getElementById('gameOver').style.display = 'none';
-
-            initGrid();
-
-        }
-
-
+			// 重置核心数据
+			score = 0;
+			grid = Array(4).fill().map(() => Array(4).fill(0));
+			
+			// 清空棋盘DOM
+			const container = document.getElementById('grid');
+			container.innerHTML = '';
+			createGrid(); // 重建棋盘结构
+			
+			// 更新分数显示
+			document.getElementById('score').textContent = 0;
+			document.getElementById('best').textContent = localStorage.getItem('best2048') || 0;
+			
+			// 隐藏游戏结束提示
+			document.getElementById('gameOver').style.display = 'none';
+			gameOverTime = 0;
+			
+			// 生成初始数字
+			addNewNumber();
+			addNewNumber();
+			updateView();
+		}
 
         function playSound(sounds) {
-
             if (!isMuted && sounds) {
-
                 const sound = sounds[Math.floor(Math.random() * sounds.length)];
-
                 sound.currentTime = 0;
-
                 sound.play().catch(() => {});
-
             }
-
         }
-
-
 
         function toggleMute() {
-
             isMuted = !isMuted;
-
             document.querySelector('.mute-btn').textContent = isMuted ? '🔇 Muted' : '🔊 Sound';
-
             bgm[isMuted ? 'pause' : 'play']();
-
         }
-
-
 
         // 初始化游戏
-
         document.addEventListener('DOMContentLoaded', () => {
-
-            initGrid();
-
+            createGrid();
+            // initGrid(); 原代码这里写的是initGrid()但函数名叫createGrid()，已修正避免报错
             initBGM();
-
         });
 
-
-
         // 增强版闲置检测
-
         function checkIdle() {
-
             if (document.getElementById('gameOver').style.display === 'flex') return;
-
             
-
             const now = Date.now();
-
             const idleDuration = now - lastActionTime;
-
             
-
             if (idleDuration > 5000) {
-
                 const timeSinceLastWaiting = now - lastWaitingTime;
-
                 if (timeSinceLastWaiting > 30000) {
-
                     let availableIndices = [0, 1].filter(i => i !== lastPlayedWaitingIndex);
-
                     const selectedIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-
                     
-
                     playSound([waitingSounds[selectedIndex]]);
-
                     lastWaitingTime = now;
-
                     lastPlayedWaitingIndex = selectedIndex;
-
                 }
-
                 resetIdleTimer(1000);
-
             } else {
-
                 resetIdleTimer(5000 - idleDuration);
-
             }
-
         }
 
-
-
-        // 中场休息检测（修改为2秒触发）
-
+        // 中场休息检测
         function checkAgain() {
-
             if (document.getElementById('gameOver').style.display === 'flex') {
-
                 const restTime = Date.now() - gameOverTime;
-
                 if (restTime > 2000) { // 修改为2000ms
-
                     playSound(againSounds);
-
                     gameOverTime = Date.now() + 30000; // 防止重复触发
-
                 }
-
             }
-
             againTimer = setTimeout(checkAgain, 500); // 缩短检测间隔
-
         }
-
-
 
         function resetIdleTimer(delay) {
-
             clearTimeout(idleTimer);
-
             idleTimer = setTimeout(checkIdle, delay);
-
         }
 
-
-
-
-        document.addEventListener('DOMContentLoaded', createGrid);
         document.addEventListener('keydown', (e) => {
             if (e.key.startsWith('Arrow')) {
                 e.preventDefault();
@@ -614,21 +551,36 @@
             }
         });
 
+        // ▼▼▼▼▼ 重点修改区域：触摸事件处理 ▼▼▼▼▼
         let touchStartX = 0;
         let touchStartY = 0;
+        
+        // 1. 允许 passive: false 以便后续可以 preventDefault
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
-        });
+        }, { passive: false });
+
+        // 2. 拦截触控滑动，这能彻底干掉所有的下拉刷新和页面跟随滑动
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault(); 
+        }, { passive: false });
+
+        // 3. 增加容错阈值，滑动超过 30 像素才算数
         document.addEventListener('touchend', (e) => {
             const dx = e.changedTouches[0].clientX - touchStartX;
             const dy = e.changedTouches[0].clientY - touchStartY;
-            if (Math.abs(dx) > Math.abs(dy)) {
-                move(dx > 0 ? 'right' : 'left');
-            } else {
-                move(dy > 0 ? 'down' : 'up');
+            
+            // 只要 X 轴或 Y 轴滑动距离大于 30，就判定为有效滑动
+            if (Math.abs(dx) > 30 || Math.abs(dy) > 30) {
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    move(dx > 0 ? 'right' : 'left');
+                } else {
+                    move(dy > 0 ? 'down' : 'up');
+                }
             }
         });
+        // ▲▲▲▲▲ 修改结束 ▲▲▲▲▲
     </script>
 </body>
 </html>
